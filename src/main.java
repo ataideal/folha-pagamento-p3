@@ -3,10 +3,13 @@ import java.util.Scanner;
 public class main {
 	static class Funcionario
 	{
-		 public String nome, endereco, tipo;
+		 public String nome, endereco;
+		 public int tipo;// 1-horista 2-assalariado 3-comissionado
 		 public Double salario, salario_mensal, comissao; 
 	 };
-	
+	 
+	 static Scanner scan = new Scanner(System.in);
+	 
 	 public static void imprimirFuncionario(Funcionario func){
 			System.out.println("--Funcionario--");
 			System.out.println("Nome: "+func.nome);
@@ -16,21 +19,45 @@ public class main {
 			System.out.println("Salario mensal: "+func.salario_mensal);
 			System.out.println("Comissao: "+func.comissao);
 		}
-	public static void inicializarFuncionarios(Funcionario funcionarios[]){
-		for( int i = 0 ; i < funcionarios.length ; i++ ){
-			funcionarios[i] = new Funcionario();
+	
+	public static void adicionarFuncionario(Funcionario func[],int totalfuncionarios){
+		System.out.println("Adicionar funcionario");
+		func[totalfuncionarios] = new Funcionario();
+		System.out.println("Nome: ");
+		func[totalfuncionarios].nome = scan.nextLine();
+		System.out.println("Endereco: ");
+		func[totalfuncionarios].endereco = scan.nextLine();
+		System.out.println("Tipo: 1-horista 2-assalariado 3-comissionado ");
+		int tipo = scan.nextInt();
+		while(tipo!=1 && tipo!=2 && tipo!=3){
+			System.out.println("Selecione um tipo correto\nTipo: 1-horista 2-assalariado 3-comissionado ");
+			tipo = scan.nextInt();
+		}
+		
+		func[totalfuncionarios].tipo = tipo;
+		System.out.println("Salario");
+		func[totalfuncionarios].salario = scan.nextDouble();
+		System.out.println("Salario Mensal: ");
+		func[totalfuncionarios].salario_mensal = scan.nextDouble();
+		System.out.println("Comissao: ");
+		func[totalfuncionarios].comissao = scan.nextDouble();
+		totalfuncionarios++;
+	}
+	
+	public static void listarFuncionariosPorNome(Funcionario func[]){
+		for( int i = 0 ; i < func.length ; i++ ){
+			if(func!=null){
+				System.out.println("Funcionario "+i+" Nome: "+func[i].nome);
+			}
 		}
 	}
 	
-	public static void adicionarFuncionario(Funcionario func[],int totalfuncionarios){
-		Scanner scan = new Scanner(System.in);
-		func[totalfuncionarios].nome = scan.nextLine();
-		func[totalfuncionarios].endereco = scan.nextLine();
-		func[totalfuncionarios].tipo = scan.nextLine();
-		func[totalfuncionarios].salario = scan.nextDouble();
-		func[totalfuncionarios].salario_mensal = scan.nextDouble();
-		func[totalfuncionarios].comissao = scan.nextDouble();
-		totalfuncionarios++;
+	public static void removerFuncionario(Funcionario func[],int totalfuncionarios){
+		listarFuncionariosPorNome(func);
+		System.out.println("Digite o numero do funcionario a ser removido: ");
+		int id = scan.nextInt();
+		if(func[id]!=null)
+			func[id]=null;
 	}
 	
 	public static int menu (){
@@ -43,21 +70,33 @@ public class main {
 						 + "7- Rodar a folha de pagamento para hoje\n"
 						 + "8- Undo\n"
 						 + "9- Redo\n"
-						 + "10- ");
-		
-		return 0;
+						 + "10- Sair ");
+		return scan.nextInt();
 	}
 	public static void main(String[] args) {
-		
-		System.out.println("hello world");
 		Funcionario funcionarios[] = new Funcionario[20];
-		inicializarFuncionarios(funcionarios);
 		int totalfuncionarios = 0;
 		//adicionarFuncionario(funcionarios,totalfuncionarios++);
 		//imprimirFuncionario(funcionarios[0]);
 		//removerFuncionario(funcionarios);
+		int opcao=0;
+		do{
+			opcao = menu();
+			switch(opcao){
+				case 1:
+					adicionarFuncionario(funcionarios,totalfuncionarios++);
+					break;
+				case 2:
+					removerFuncionario(funcionarios,totalfuncionarios--);
+					break;
+				case 10:
+					System.out.println("Saiu do sistema");
+					break;
+				default:
+					System.out.println("Essa opcao nao existe!");
+			}
+		}while(opcao!=10);
 		
-		int opcao = menu();
 		
 		
 	}
