@@ -1,5 +1,6 @@
 # Projeto folha de pagamento
 Projeto destinado a disciplina de P3
+IDE: Eclipse Neon.2
 
 ### Tasks:
 ```sh
