@@ -6,9 +6,9 @@ IDE: Eclipse Neon.2
 ```sh
 [x] Adição de um empregado
 [x] Remoção de um empregado
-[ ] Lançar um Cartão de Ponto
-[ ] Lançar um Resultado Venda
-[ ] Lançar uma taxa de serviço 
+[x] Lançar um Cartão de Ponto
+[x] Lançar um Resultado Venda
+[x] Lançar uma taxa de serviço 
 [ ] Alterar detalhes de um empregado 
 [ ] Rodar a folha de pagamento para hoje 
 [ ] Undo/redo 
