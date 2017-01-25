@@ -9,10 +9,10 @@ IDE: Eclipse Neon.2
 [x] Lançar um Cartão de Ponto
 [x] Lançar um Resultado Venda
 [x] Lançar uma taxa de serviço 
-[ ] Alterar detalhes de um empregado 
-[ ] Rodar a folha de pagamento para hoje 
-[ ] Undo/redo 
-[ ] Agenda de Pagamento 
-[ ] Criação de Novas Agendas de Pagamento 
+[x] Alterar detalhes de um empregado 
+[x] Rodar a folha de pagamento para hoje 
+[x] Undo/redo 
+[x] Agenda de Pagamento 
+[x] Criação de Novas Agendas de Pagamento 
 ```
 
