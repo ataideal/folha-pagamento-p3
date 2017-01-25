@@ -27,6 +27,10 @@ public class main {
 			tipo_pag=1;
 		}
 	};
+	
+	static class Agenda{
+		public int dia,tipo;
+	};
 
 	static Scanner scan = new Scanner(System.in);
 	static Calendar calendar = Calendar.getInstance();
@@ -36,6 +40,8 @@ public class main {
 	public static void main(String[] args) {
 		Funcionario funcionarios[] = new Funcionario[20];
 		Funcionario ultimaAlteracao[] = new Funcionario[20];
+		Agenda agenda[] = new Agenda[20];
+		
 		setarFuncionariosIniciais(funcionarios);
 		int totalfuncionarios = 0;
 		int opcao=0;
@@ -88,21 +94,152 @@ public class main {
 				}
 				break;
 			case 10:
+				undoRedo(ultimaAlteracao,funcionarios);
+				criarAgendas(funcionarios,agenda);
+				break;
+			case 11:
+				listarFuncionariosDetalhe(funcionarios);
+				break;
+			case 12:
 				System.out.println("Saiu do sistema");
 				break;
 			default:
 				System.out.println("Essa opcao nao existe!");
 				break;
 			}
-		}while(opcao!=10);
+		}while(opcao!=12);
 	}
 	
-	private static void undoRedo(Funcionario[] ultimaAlteracao, Funcionario[] funcionarios) {
-		for(int i=0;i<20;i++){
-			ultimaAlteracao[i] = funcionarios[i];
+	private static void criarAgendas(Funcionario[] funcionarios,Agenda[] agenda) {
+		System.out.println("----Agenda de pagamentos----");
+		for(int i=0;i<10;i++){
+			if(agenda[i]!=null){
+				System.out.print("Agenda "+i+":\nTipo de pagamento: ");
+				if(agenda[i].tipo==1)
+					System.out.println("Semanal "+diaPagamento(agenda[i].dia));
+				if(agenda[i].tipo==2)
+					System.out.println("Bissemanal "+diaPagamento(agenda[i].dia));
+				if(agenda[i].tipo==3) 
+					System.out.println("Mensal "+agenda[i].dia);
+
+			}
 		}
+		
+		System.out.println("Digite uma opcao:\n1-Criar nova agenda\n2-Associar agenda");
+		int op = scan.nextInt();
+		if(op==1){
+			for(int i=0;i<10;i++){
+				if(agenda[i]==null){
+					agenda[i] = new Agenda();
+					System.out.println("Digite o tipo de pagamento: 1-semanal 2-bissemanal 3-mensal");
+					agenda[i].tipo = scan.nextInt();
+					if(agenda[i].tipo==3)
+						System.out.println("Digite o dia do mes");
+					else
+						System.out.println("Digite o dia da semana");
+					agenda[i].dia = scan.nextInt();
+					
+					System.out.println("Criada com sucesso!");
+					break;
+				}
+			}
+		}else if(op==2){
+			System.out.println("Digite o numero da agenda: ");
+			int idAgenda = scan.nextInt();
+			listarFuncionariosPorNome(funcionarios);
+			System.out.println("Digite o numero do funcionario: ");
+			int id = scan.nextInt();
+			
+			funcionarios[id].dia_pag = agenda[idAgenda].dia;
+			funcionarios[id].tipo_pag = agenda[idAgenda].tipo;
+			
+			System.out.println("Associado com sucesso!");
+		}
+		
 	}
 
+	private static void undoRedo(Funcionario[] ultimaAlteracao, Funcionario[] funcionarios) {
+		for(int i=0;i<20;i++){
+			if(funcionarios[i]!=null){
+				if(ultimaAlteracao[i]==null)
+					ultimaAlteracao[i] = new Funcionario();
+			ultimaAlteracao[i].nome = funcionarios[i].nome;
+			ultimaAlteracao[i].endereco = funcionarios[i].endereco;
+			ultimaAlteracao[i].sindicato = funcionarios[i].sindicato;
+			ultimaAlteracao[i].id_sindicato = funcionarios[i].id_sindicato;
+			ultimaAlteracao[i].taxa_sindicato = funcionarios[i].taxa_sindicato;
+			ultimaAlteracao[i].ultimaEntrada = funcionarios[i].ultimaEntrada;
+			ultimaAlteracao[i].taxas_nome = funcionarios[i].taxas_nome;
+			ultimaAlteracao[i].tipo = funcionarios[i].tipo;
+			ultimaAlteracao[i].horas_trabalhadas = funcionarios[i].horas_trabalhadas;
+			ultimaAlteracao[i].salario = funcionarios[i].salario;
+			ultimaAlteracao[i].salario_mensal = funcionarios[i].salario_mensal;
+			ultimaAlteracao[i].salario_hora = funcionarios[i].salario_hora;
+			ultimaAlteracao[i].comissao = funcionarios[i].comissao;
+			ultimaAlteracao[i].vendas = funcionarios[i].vendas;
+			ultimaAlteracao[i].taxas = funcionarios[i].taxas;
+			ultimaAlteracao[i].tipo_pag = funcionarios[i].tipo_pag;
+			}
+		}
+	}
+	
+	private static void swap(Funcionario[] ultimaAlteracao, Funcionario[] funcionarios) {
+		for(int i=0;i<20;i++){
+			Funcionario aux = new Funcionario();
+			aux.nome = funcionarios[i].nome;
+			aux.endereco = funcionarios[i].endereco;
+			aux.sindicato = funcionarios[i].sindicato;
+			aux.id_sindicato = funcionarios[i].id_sindicato;
+			aux.taxa_sindicato = funcionarios[i].taxa_sindicato;
+			aux.ultimaEntrada = funcionarios[i].ultimaEntrada;
+			aux.taxas_nome = funcionarios[i].taxas_nome;
+			aux.tipo = funcionarios[i].tipo;
+			aux.horas_trabalhadas = funcionarios[i].horas_trabalhadas;
+			aux.salario = funcionarios[i].salario;
+			aux.salario_mensal = funcionarios[i].salario_mensal;
+			aux.salario_hora = funcionarios[i].salario_hora;
+			aux.comissao = funcionarios[i].comissao;
+			aux.vendas = funcionarios[i].vendas;
+			aux.taxas = funcionarios[i].taxas;
+			aux.tipo_pag = funcionarios[i].tipo_pag;
+			
+			funcionarios[i].nome = ultimaAlteracao[i].nome;
+			funcionarios[i].endereco = ultimaAlteracao[i].endereco;
+			funcionarios[i].sindicato = ultimaAlteracao[i].sindicato;
+			funcionarios[i].id_sindicato = ultimaAlteracao[i].id_sindicato;
+			funcionarios[i].taxa_sindicato = ultimaAlteracao[i].taxa_sindicato;
+			funcionarios[i].ultimaEntrada = ultimaAlteracao[i].ultimaEntrada;
+			funcionarios[i].taxas_nome = ultimaAlteracao[i].taxas_nome;
+			funcionarios[i].tipo = ultimaAlteracao[i].tipo;
+			funcionarios[i].horas_trabalhadas = ultimaAlteracao[i].horas_trabalhadas;
+			funcionarios[i].salario = ultimaAlteracao[i].salario;
+			funcionarios[i].salario_mensal = ultimaAlteracao[i].salario_mensal;
+			funcionarios[i].salario_hora = ultimaAlteracao[i].salario_hora;
+			funcionarios[i].comissao = ultimaAlteracao[i].comissao;
+			funcionarios[i].vendas = ultimaAlteracao[i].vendas;
+			funcionarios[i].taxas = ultimaAlteracao[i].taxas;
+			funcionarios[i].tipo_pag = ultimaAlteracao[i].tipo_pag;
+			
+			ultimaAlteracao[i].nome = aux.nome;
+			ultimaAlteracao[i].endereco = aux.endereco;
+			ultimaAlteracao[i].sindicato = aux.sindicato;
+			ultimaAlteracao[i].id_sindicato = aux.id_sindicato;
+			ultimaAlteracao[i].taxa_sindicato = aux.taxa_sindicato;
+			ultimaAlteracao[i].ultimaEntrada = aux.ultimaEntrada;
+			ultimaAlteracao[i].taxas_nome = aux.taxas_nome;
+			ultimaAlteracao[i].tipo = aux.tipo;
+			ultimaAlteracao[i].horas_trabalhadas = aux.horas_trabalhadas;
+			ultimaAlteracao[i].salario = aux.salario;
+			ultimaAlteracao[i].salario_mensal = aux.salario_mensal;
+			ultimaAlteracao[i].salario_hora = aux.salario_hora;
+			ultimaAlteracao[i].comissao = aux.comissao;
+			ultimaAlteracao[i].vendas = aux.vendas;
+			ultimaAlteracao[i].taxas = aux.taxas;
+			ultimaAlteracao[i].tipo_pag = aux.tipo_pag;
+			
+		}
+	}
+	
 	private static void setarFuncionariosIniciais(Funcionario[] func) {
 		func[0] = new Funcionario();
 		func[0].nome = "ataide";
@@ -119,8 +256,6 @@ public class main {
 		func[0].horas_trabalhadas[0][25-1] = 480;
 		func[0].horas_trabalhadas[0][26-1] = 540;
 		func[0].horas_trabalhadas[0][27-1] = 480;
-		
-		
 	}
 
 	private static void gerarFolhaPagamento(Funcionario[] func) {
@@ -137,9 +272,9 @@ public class main {
 
 		for(int i=0;i<20;i++){
 			if(func[i]!=null){
+				//System.out.println("func:"+func[i].nome+ " - "+func[i].tipo_pag+ " - "+func[i].dia_pag + " - "+cal.get(Calendar.DAY_OF_MONTH));
 				if(func[i].tipo_pag == 3 && func[i].dia_pag==cal.get(Calendar.DAY_OF_MONTH)){
 					pagarFuncionario(func[i],cal);
-					
 				}else if(func[i].tipo_pag==1 && func[i].dia_pag==cal.get(Calendar.DAY_OF_WEEK))
 					pagarFuncionario(func[i],cal);
 				else if(func[i].tipo_pag==2 && func[i].dia_pag==cal.get(Calendar.DAY_OF_WEEK) && cal.get(Calendar.WEEK_OF_YEAR)%2==0){
@@ -221,9 +356,9 @@ public class main {
 		if(func[id]!=null){
 			detalhesFuncionario(func[id]);
 			System.out.println("Digite o que voce deseja alterar: ");
-			int opcao = scan.nextInt();	
 			int flag=1;
 			do{
+				int opcao = scan.nextInt();	
 				switch(opcao){
 				case 1:
 					System.out.println("Digite o novo nome:");
@@ -413,7 +548,9 @@ public class main {
 				+ "7- Alterar detalhes de um empregado\n"
 				+ "8- Rodar a folha de pagamento para hoje\n"
 				+ "9- Undo\\Redo\n"
-				+ "10- Sair\n");
+				+ "10- Agenda de pagamento\n"
+				+ "11- Listar funcionarios\n"
+				+ "12- Sair\n");
 		return scan.nextInt();
 	}
 
@@ -496,6 +633,16 @@ public class main {
 			}
 		}
 	}
+	
+	public static void listarFuncionariosDetalhe(Funcionario func[]){
+		System.out.println("Lista de funcionarios:");
+		for( int i = 0 ; i < func.length ; i++ ){
+			if(func[i]!=null){
+				detalhesFuncionario(func[i]);
+			}
+		}
+	}
+	
 
 	public static int removerFuncionario(Funcionario func[],int totalfuncionarios){
 		listarFuncionariosPorNome(func);
