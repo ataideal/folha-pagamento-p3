@@ -10,19 +10,19 @@ public class main {
 	{
 		public int sindicato;
 		public String id_sindicato;
-		public Double taxa_sindicato;
+		public double taxa_sindicato;
 		public Calendar ultimaEntrada;
 		public String nome, endereco, taxas_nome[];
 		public int tipo,horas_trabalhadas[][];// 1-horista 2-assalariado 3-comissionado
-		public Double salario, salario_mensal,salario_hora, comissao,vendas[][],taxas[];
+		public double salario, salario_mensal,salario_hora, comissao,vendas[][],taxas[];
 		public int dia_pag,tipo_pag; //1-semanal 2-bissemanal 3-mensal 
 
 		public Funcionario(){
 			sindicato = 0;
 			horas_trabalhadas = new int[12][31];
-			vendas = new Double[12][31];
+			vendas = new double[12][31];
 			taxas_nome = new String[10];
-			taxas = new Double[10];
+			taxas = new double[10];
 			dia_pag =6;
 			tipo_pag=1;
 		}
@@ -256,22 +256,33 @@ public class main {
 		func[0].horas_trabalhadas[0][25-1] = 480;
 		func[0].horas_trabalhadas[0][26-1] = 540;
 		func[0].horas_trabalhadas[0][27-1] = 480;
+		
+		
+		func[1] = new Funcionario();
+		func[1].nome = "poca";
+		func[1].endereco = "rua 1";
+		func[1].tipo = 3;
+		func[1].comissao = 25;
+		func[1].taxas[0]=15.0;
+		func[1].taxas_nome[0]="INSS";
+		func[1].vendas[0][26-1]=600;
+		func[1].tipo_pag = 3;
+		func[1].dia_pag = 10;
 	}
 
 	private static void gerarFolhaPagamento(Funcionario[] func) {
 		scan.nextLine();
 		System.out.print("Digite a data da folha: ");
 		String datafolha =scan.nextLine();
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		Calendar cal = Calendar.getInstance();
-		try {
-			cal.setTime(sdf.parse(datafolha));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-
 		for(int i=0;i<20;i++){
 			if(func[i]!=null){
+				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+				Calendar cal = Calendar.getInstance();
+				try {
+					cal.setTime(sdf.parse(datafolha));
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
 				//System.out.println("func:"+func[i].nome+ " - "+func[i].tipo_pag+ " - "+func[i].dia_pag + " - "+cal.get(Calendar.DAY_OF_MONTH));
 				if(func[i].tipo_pag == 3 && func[i].dia_pag==cal.get(Calendar.DAY_OF_MONTH)){
 					pagarFuncionario(func[i],cal);
@@ -289,6 +300,9 @@ public class main {
 	private static void pagarFuncionario(Funcionario func,Calendar cal) {
 		System.out.println("Funcionario: "+func.nome);
 		Calendar aux = cal;
+		System.out.println("dia:"+aux.get(Calendar.DAY_OF_MONTH));
+		System.out.println("mes"+aux.get(Calendar.MONTH));
+		double salario_comissao=0;
 		func.salario=0.0;
 		if(func.tipo==1){
 			int j=0;
@@ -303,7 +317,7 @@ public class main {
 			aux = cal;
 			for(int i=0;i<j;i++){
 				aux.add(Calendar.DAY_OF_YEAR, -1);
-				Double horas = (func.horas_trabalhadas[aux.get(Calendar.MONTH)][aux.get(Calendar.DAY_OF_MONTH)-1]/60.0);
+				double horas = (func.horas_trabalhadas[aux.get(Calendar.MONTH)][aux.get(Calendar.DAY_OF_MONTH)-1]/60.0);
 				if(horas>8){
 					func.salario += func.salario_hora * 8;
 					func.salario += func.salario_hora * 1.5 * (horas-8);
@@ -327,15 +341,17 @@ public class main {
 			aux = cal;
 			for(int i=0;i<j;i++){
 				aux.add(Calendar.DAY_OF_YEAR, -1);
-				Double vendas = (func.vendas[aux.get(Calendar.MONTH)][aux.get(Calendar.DAY_OF_MONTH)-1]);
-				func.salario += vendas*(func.comissao/100);
+				int mes=aux.get(Calendar.MONTH),dia = aux.get(Calendar.DAY_OF_MONTH);
+				double vendas = (func.vendas[mes][dia]);
+				System.out.println("dia:"+dia+" mes:"+mes+ " valor: "+vendas);
+				salario_comissao += vendas*(func.comissao/100);
 			}
 		}
 
 		System.out.println("Salario bruto: "+func.salario);
-		Double taxas=0.0;
+		double taxas=0.0;
 		for(int i=0;i<10;i++){
-			if(func.taxas[i]!=null){
+			if(func.taxas[i]!=0){
 				System.out.println("Taxa "+func.taxas_nome[i]+": "+func.taxas[i]+"%");
 				taxas += func.salario*(func.taxas[i]/100);
 			}
@@ -344,8 +360,11 @@ public class main {
 			System.out.println("Taxa do sindicato:"+func.taxa_sindicato);
 			taxas += func.taxa_sindicato;
 		}
+		
+		if(func.tipo==3)
+			System.out.println("Comissao de vendas: "+salario_comissao);
 
-		System.out.println("Salario liquido: "+(func.salario-taxas));
+		System.out.println("Salario liquido: "+(func.salario-taxas+salario_comissao));
 		System.out.println("-------------------------------");
 	}
 
@@ -431,7 +450,7 @@ public class main {
 	}
 
 	private static void detalhesFuncionario(Funcionario func) {
-		System.out.println("---Detalhes do funcionario---");
+		System.out.println("\n---Detalhes do funcionario---");
 		System.out.println("1 - Nome: "+func.nome);
 		System.out.println("2- Endereço: "+func.endereco);
 		System.out.print("3- Tipo: ");
@@ -493,9 +512,9 @@ public class main {
 		System.out.println("Digite o nome da taxa: ");
 		String nomeTaxa = scan.nextLine();	
 		System.out.println("Digite o valor da taxa em porcentagem: ");
-		Double taxa = scan.nextDouble();	
+		double taxa = scan.nextDouble();	
 		for(int i=0;i<10;i++){
-			if(func[id].taxas[i]==null){
+			if(func[id].taxas[i]==0){
 				func[id].taxas[i] = taxa;
 				func[id].taxas_nome[i] = nomeTaxa;
 				System.out.println("Taxa cadastrada com sucesso!");
@@ -517,12 +536,12 @@ public class main {
 			imprimirVendas(func[id],mes);
 		}else if (opc==2){
 			System.out.print("Digite o valor da venda: ");
-			Double valor = scan.nextDouble();
+			double valor = scan.nextDouble();
 			System.out.print("Digite o mes da venda: ");
 			int mes = scan.nextInt();
 			System.out.print("Digite o dia da venda: ");
 			int dia = scan.nextInt();
-			func[id].vendas[mes][dia] += valor;
+			func[id].vendas[mes-1][dia-1] += valor;
 
 			System.out.println("Venda cadastrada!");
 		}
@@ -531,14 +550,14 @@ public class main {
 	private static void imprimirVendas(Funcionario funcionario, int mes) {
 		System.out.println("----Resultado vendas mes "+mes+" - "+funcionario.nome+"----");
 		for(int i=0;i<31;i++){
-			if(funcionario.vendas[mes][i]!=0)
-				System.out.println("Dia "+i+1+":"+funcionario.vendas[mes][i]+" reais.");
+			if(funcionario.vendas[mes-1][i]!=0)
+				System.out.println("Dia "+(i+1)+":"+funcionario.vendas[mes-1][i]+" reais.");
 		}
 
 	}
 
 	public static int menu (){
-		System.out.println("---- Menu Folha de Pagamento ----   "+data+" \n"
+		System.out.println("\n---- Menu Folha de Pagamento ----   "+data+" \n"
 				+ "1- Adição de um empregado\n"
 				+ "2- Remoção de um empregado\n"
 				+ "3- Lançar um Cartão de Ponto\n"
@@ -626,21 +645,23 @@ public class main {
 	}
 
 	public static void listarFuncionariosPorNome(Funcionario func[]){
-		System.out.println("Lista de funcionarios:");
+		System.out.println("\nLista de funcionarios:");
 		for( int i = 0 ; i < func.length ; i++ ){
 			if(func[i]!=null){
 				System.out.println("Funcionario "+i+" - Nome: "+func[i].nome);
 			}
 		}
+		System.out.println("");
 	}
 	
 	public static void listarFuncionariosDetalhe(Funcionario func[]){
-		System.out.println("Lista de funcionarios:");
+		System.out.println("\nLista de funcionarios:");
 		for( int i = 0 ; i < func.length ; i++ ){
 			if(func[i]!=null){
 				detalhesFuncionario(func[i]);
 			}
 		}
+		System.out.println("");
 	}
 	
 
@@ -671,7 +692,7 @@ public class main {
 		System.out.println("----Dias trabalhados mes "+mes+"----");
 		for(int i=0;i<31;i++){
 			if(funcionario.horas_trabalhadas[mes][i]!=0)
-				System.out.println("Dia "+i+1+":"+funcionario.horas_trabalhadas[mes][i]+" minutos");
+				System.out.println("Dia "+i+":"+funcionario.horas_trabalhadas[mes][i]+" minutos");
 		}
 	}
 
